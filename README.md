@@ -1,1 +1,3 @@
-# liri
+Music, Events, movies and more...
+
+The LIRI app is a Language Interpretation and Recognition Interface. Similar to Apple's SIRI, LIRI can take in a command and return data/inforamtion. In the case of this app, you can use a callback function to get details on some of your favorite Music, events that you may be interested in attending or any of your favorite movies. Want to see how it works? There's a feeling lucky function built in that returns randomized information on one of the mentioned categories.
