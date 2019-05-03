@@ -17,7 +17,7 @@ const omdb = require('omdb');
 const axios = require('axios');
 const fs = require("fs");
 const action = process.argv[2];
-const argument = "";
+const argument = process.argv[3];
 
 
 //Controller function that determines which action is taken and what data is returned
@@ -36,7 +36,7 @@ function doSomething(action, argument) {
     let songTitle = argument;
     if(songTitle === "") {
       lookupSpecificSong();
-    } else {getsongInfor(songTitle);}
+    } else { console.log('Error'); }
     break;
 
     //OMDB
@@ -45,7 +45,7 @@ function doSomething(action, argument) {
     let movieTitle = argument;
     if(movieTitle === "") {
       getMovieInfo("Get Out");
-    }else {getMovieInfo(movieTitle);}
+    }else { getMovieInfo(movieTitle); }
     break;
 
     //Ticket Master
@@ -54,7 +54,7 @@ function doSomething(action, argument) {
     let name = argument;
     if(name === ""){
       getEventInfo(results);
-    }else {getEventInfo(name);}
+    }else { getEventInfo(name); }
     break;
 
     //does something with text
@@ -67,20 +67,23 @@ function doSomething(action, argument) {
 
 //gets 3rd argument 
 function getThirdArgument() {
-  argumentArray = process.argv;
+ let argumentArray = process.argv;
+ 
 
   //loops through node arguments
-  for (let i = 3; i < argumentArray.length; i++) {
-    argument += argumentArray[i];
+  for ( let i = 3; i < argumentArray.length; i++) {
+    let argument = argumentArray[i];
   }
-  return argument;
+   
+  
+  console.log(argument);
 }
 
 
 
 
 //This is the spotify callback and console logs
-function getSongInfor(songTitle) {
+function getSongInfo(songTitle) {
   
   let spotify = new Spotify({
     id: process.env.SPOTIFY_ID,
@@ -124,30 +127,29 @@ ticketmaster(process.env.TICKETMASTER_ID ).discovery.v2.event.all()
 
 
 //This is the OMDB callback and console log
-const omdbKey= new Omdb({
-  id: process.env.OMDB_ID,
+// const omdbKey= new Omdb({
+//   id: process.env.OMDB_ID,
   
-});
+// });
 
 function getMovieInfo(movieTitle) { 
+  let queryUrl = `http://www.omdbapi.com/?t=" ${movieTitle} "&y=&plot=short&tomatoes=true&r=json&apikey=triloy`;
+  axios.get(queryUrl).then( (response) => {   
 
-  let queryUrl = `http://www.omdbapi.com/?t=" ${movieTitle} "&y=&plot=short&tomatoes=true&r=json&apikey=${omdbKey}`;
-  axios.get(queryUrl).then( (response => {
     let movie = response.data;
-
     console.log( "The movie's Title is: " + movie.Title);
     console.log( "The movie was released in the year: " + movie.Year);
     console.log("The movie's rating is: " + movie.imdbRating);
     console.log("Here is the movie's plot: " + movie.Polt);
 
+  })
+    
 
 
 
-  }
-}).catch (err => {
-    console.log( err );
+};
 
-  function doWhatItSays() {
+function doWhatItSays() {
 
     fs.readFile("random.txt", "utf8", function(err, data) {
       if (err) {
@@ -173,4 +175,4 @@ function getMovieInfo(movieTitle) {
   function logOutput(logText) {
     log.info(logText);
     console.log(logText);
-  });
+  };
