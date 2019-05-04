@@ -126,52 +126,25 @@ ticketmaster(process.env.TICKETMASTER_ID ).discovery.v2.event.all()
 
 
 //This is the OMDB callback and console log
-// const omdbKey= new Omdb({
-//   id: process.env.OMDB_ID,
-  
-// });
+function searchOmdb(movie) {
+  magicKey= process.env.OMDB_ID
+  axios.get("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=" + magicKey).then(
+      function (response) {
 
-function getMovieInfo(movieTitle) { 
-  let queryUrl = `http://www.omdbapi.com/?t=" ${movieTitle} "&y=&plot=short&tomatoes=true&r=json&apikey=triloy`;
-  axios.get(queryUrl).then( (response) => {   
+ 
+          
+          if (response.data.Title === undefined) {
+              console.log("Error! Please enter a new movie!")
+              
+          } else {
 
-    let movie = response.data;
-    console.log( "The movie's Title is: " + movie.Title);
-    console.log( "The movie was released in the year: " + movie.Year);
-    console.log("The movie's rating is: " + movie.imdbRating);
-    console.log("Here is the movie's plot: " + movie.Polt);
-
-  })
-    
-
+              console.log("Movie Title: " + response.data.Title);
+              console.log("Year Released: " + response.data.Year);
+              console.log("IMDB Rating: " + response.data.imdbRating);
+              console.log("Rotten Tomatoes: " + response.data.Ratings[1].Value);
+          }
+      });
+}
 
 
-};
 
-function doWhatItSays() {
-
-    fs.readFile("random.txt", "utf8", function(err, data) {
-      if (err) {
-        logOutput.error(err);
-      } else {
-  
-        // Creates array with data.
-        var randomArray = data.split(",");
-  
-        // Sets action to first item in array.
-        action = randomArray[0];
-  
-        // Sets optional third argument to second item in array.
-        argument = randomArray[1];
-  
-        // Calls main controller to do something based on action and argument.
-        doSomething(action, argument);
-      }
-    });
-  }
-  
-  // Logs data to the terminal and output to a text file.
-  function logOutput(logText) {
-    log.info(logText);
-    console.log(logText);
-  };
