@@ -2,7 +2,7 @@
   "name": "liri",
   "version": "1.0.0",
   "description": "Music, Events, movies and more...",
-  "main": "liri.js",
+  "main": "liri2.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

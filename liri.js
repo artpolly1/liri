@@ -83,35 +83,34 @@ function getThirdArgument() {
 
 
 //This is the spotify callback and console logs
-function getSongInfo(songTitle) {
-  
-  let spotify = new Spotify({
-    id: process.env.SPOTIFY_ID,
+
+const spotify = new Spotify({
+  id: process.env.SPOTIFY_ID,
     secret: process.env.SPOTIFY_SECRET,
-  });
-  
-  spotify.search({ type: 'track', query: songTitle}, function(err, data) {
-    if (err) {
-      return console.log('Error occurred: ' + err);
-    }
-  
-    let artistsArray = data.tracks.items[0].album.artists;
-    let artistsNames = [];
-  
+});
+
+function spotifySearch(track) {
+  spotify.search({ type: 'track', query: track, limit: 1 }, function(err, data) {
     
-    //found online... pushes artists tracks to array
-    for(let i = 0; i = artistsArray.length; i++) {
-      artistsNames.push(artistsArray[i].name);
+    if(data !== undefined && data.tracks !== undefined && data.tracks.items.length === 0){
+      console.log("---------------------------------------------------------------------------------")
+              console.log("There was an error.  How about this song instead?")
+  
+              spotifySearch("Jesus Walks");
+    } else if (err) {
+      console.log('Error occurred: ' + err);
+    }else {
+    console.log("The name of the album  is: " + data.tracks.items[0].artists[0].name); 
+    console.log(data.tracks.items[0].name);
+    console.log("The is an: " + data.tracks.items[0].album.type); 
+    console.log("The link to the album is: " + data.tracks.items[0].uri);
+        
     }
 
-  console.log("The name of the album  is: " + data.tracks.items[0].album.name); 
-  console.log("The is an: " + data.tracks.items[0].album.type); 
-  console.log("The link to the album is: " + data.tracks.items[0].uri);
-  
   });
-  
 
 }
+
 
 
 
