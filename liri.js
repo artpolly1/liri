@@ -20,13 +20,12 @@ const action = process.argv[2];
 const argument = process.argv[3];
 
 
-//Controller function that determines which action is taken and what data is returned
-doSomething(action, argument);
+
 
 
 //functions
 function doSomething(action, argument) {
-  argument = getThirdArgument();
+  // argument = getThirdArgument();
 
   switch(action) {
 
@@ -34,9 +33,12 @@ function doSomething(action, argument) {
   //================================
     case "spotify-this-song":
     let songTitle = argument;
+
     if(songTitle === "") {
-      lookupSpecificSong();
-    } else { console.log('Error'); }
+      console.log('Error');
+    } else {
+      lookupSpecificSong(songTitle);
+  }
     break;
 
     //OMDB
@@ -45,7 +47,9 @@ function doSomething(action, argument) {
     let movieTitle = argument;
     if(movieTitle === "") {
       getMovieInfo("Get Out");
-    }else { getMovieInfo(movieTitle); }
+    }else { 
+      getMovieInfo(movieTitle); 
+    }
     break;
 
     //Ticket Master
@@ -53,50 +57,41 @@ function doSomething(action, argument) {
     case "find-this-event":
     let name = argument;
     if(name === ""){
-      getEventInfo(results);
-    }else { getEventInfo(name); }
+      console.log('Error');
+    }else { 
+      getEventInfo(name); 
+    }
     break;
 
     //does something with text
     case "do-what-it-says":
-    doWhatItSays();
+    console.log(argument);
     break;
   }
 
 }
-
-//gets 3rd argument 
-function getThirdArgument() {
- let argumentArray = process.argv;
- 
-
-  //loops through node arguments
-  for ( let i = 3; i < argumentArray.length; i++) {
-    let argument = argumentArray[i];
-  }
-   
-  
-  console.log(argument);
-}
-
-
-
-
-//This is the spotify callback and console logs
-
 const spotify = new Spotify({
   id: process.env.SPOTIFY_ID,
     secret: process.env.SPOTIFY_SECRET,
 });
+doSomething(action, argument);
 
-function spotifySearch(track) {
+
+//This is the spotify callback and console logs
+
+
+
+// console.log(spotify);
+
+
+function lookupSpecificSong(track) {
   spotify.search({ type: 'track', query: track, limit: 1 }, function(err, data) {
     
     if(data !== undefined && data.tracks !== undefined && data.tracks.items.length === 0){
       console.log("---------------------------------------------------------------------------------")
               console.log("There was an error.  How about this song instead?")
   
-              spotifySearch("Jesus Walks");
+              lookupSpecificSong("Jesus Walks");
     } else if (err) {
       console.log('Error occurred: ' + err);
     }else {
@@ -112,21 +107,23 @@ function spotifySearch(track) {
 }
 
 
-
-
 //This is the ticketmaster callback and console logs 
-ticketmaster(process.env.TICKETMASTER_ID ).discovery.v2.event.all()
-.then(function(result) {
-
-  console.log("The event  is: " + result.items[0].name);
-  console.log("The event's URL is: " + result.items[0].url);
+function getEventInfo(name) {
+  ticketmaster(process.env.TICKETMASTER_KEY ).discovery.v2.event.find(name)
+  .then(function(result) {
   
-});
-
+    console.log("The event  is: " + result.items[0].name);
+    console.log("The event's URL is: " + result.items[0].url);
+  
+  }).catch(function(err){
+console.log(err);
+  });
+  
+}
 
 
 //This is the OMDB callback and console log
-function searchOmdb(movie) {
+function getMovieInfo(movie) {
   magicKey= process.env.OMDB_ID
   axios.get("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=" + magicKey).then(
       function (response) {
@@ -143,6 +140,8 @@ function searchOmdb(movie) {
               console.log("IMDB Rating: " + response.data.imdbRating);
               console.log("Rotten Tomatoes: " + response.data.Ratings[1].Value);
           }
+      }).catch(function(err) {
+ console.log(err);
       });
 }
 
